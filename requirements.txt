@@ -1,0 +1,31 @@
+# Core AI Framework
+crewai==0.86.0
+crewai-tools==0.17.0
+
+# LLM APIs
+groq==0.11.0
+openai==1.54.4
+
+# Web Search & Scraping
+requests==2.31.0
+beautifulsoup4==4.12.3
+duckduckgo-search==6.3.5
+python-dotenv==1.0.1
+
+# Data Processing
+pandas==2.2.0
+python-dateutil==2.8.2
+
+# Image Handling
+Pillow==10.2.0
+
+# UI Framework
+streamlit==1.39.0
+streamlit-extras==0.4.0
+
+# Utilities
+pydantic==2.10.3
+tenacity==8.2.3
+
+# Monitoring & Logging
+colorlog==6.8.0
