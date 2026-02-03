@@ -3,9 +3,12 @@
 ##  Uses DuckDuckGo search (free, no API key needed)
 
 
-from crewai_tools import tool
+from json import tool
+from json import tool
+from crewai.tools import BaseTool
+from pydantic import Field
 from duckduckgo_search import DDGS
-from monitoring import log_api_call, setup_logger
+from monitoring import log_api_call, setup_logger 
 
 logger = setup_logger("web_search")
 
