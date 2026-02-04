@@ -46,8 +46,9 @@ def create_discovery_task(user_preferences: str) -> Task:
     
     return task
 
-
 if __name__ == "__main__":
+    from crewai import Crew
+    
     print("=" * 70)
     print("🎯 TESTING ATLAS WITH A REAL TASK")
     print("=" * 70)
@@ -64,6 +65,13 @@ if __name__ == "__main__":
     # Create the task
     discovery_task = create_discovery_task(user_request)
     
+    # Create a crew with Atlas and the task
+    crew = Crew(
+        agents=[atlas],
+        tasks=[discovery_task],
+        verbose=True
+    )
+    
     print("Task created! Atlas will now:")
     print("1. Read the user preferences")
     print("2. Search the web for destinations")
@@ -74,8 +82,8 @@ if __name__ == "__main__":
     print("=" * 70)
     print()
     
-    # Execute the task!
-    result = discovery_task.execute()
+    # Execute the crew!
+    result = crew.kickoff()
     
     print()
     print("=" * 70)

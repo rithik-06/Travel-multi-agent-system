@@ -1,17 +1,23 @@
-
-#   Web search tool for agents to find travel information
-##  Uses DuckDuckGo search (free, no API key needed)
-
-
-
+"""
+Web search tool for agents to find travel information
+Uses DuckDuckGo search (free, no API key needed)
+"""
 
 from crewai.tools import BaseTool
+from typing import Type
+from pydantic import BaseModel, Field
 from duckduckgo_search import DDGS
+
+
+class WebSearchInput(BaseModel):
+    """Input for web search tool"""
+    query: str = Field(..., description="Search query for finding travel information")
 
 
 class WebSearchTool(BaseTool):
     name: str = "Web Search"
-    description: str = "Search the web for information about destinations, hotels, activities, etc. Input should be a search query."
+    description: str = "Useful for searching the web to find information about travel destinations, hotels, activities, and more. Input should be a search query string."
+    args_schema: Type[BaseModel] = WebSearchInput
     
     def _run(self, query: str) -> str:
         """
@@ -32,12 +38,12 @@ class WebSearchTool(BaseTool):
             if not results:
                 return f"No results found for: {query}"
             
-            # Format results nicely for the agent
+            # Format results nicely
             formatted_results = f"Search results for '{query}':\n\n"
             
             for i, result in enumerate(results, 1):
                 formatted_results += f"{i}. {result['title']}\n"
-                formatted_results += f"   {result['body']}\n"
+                formatted_results += f"   {result['body'][:200]}...\n"
                 formatted_results += f"   URL: {result['href']}\n\n"
             
             return formatted_results
@@ -46,7 +52,7 @@ class WebSearchTool(BaseTool):
             return f"Search failed: {str(e)}"
 
 
-# Create an instance of the tool
+# Create instance
 web_search_tool = WebSearchTool()
 
 
