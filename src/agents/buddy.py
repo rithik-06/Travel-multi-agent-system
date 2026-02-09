@@ -43,3 +43,14 @@ buddy = Agent(
     verbose=True,
     allow_delegation=False
 )
+
+if __name__ == "__main__":
+    # Test Buddy
+    print("=" * 60)
+    print("👥 BUDDY - Community Agent")
+    print("=" * 60)
+    print(f"Role: {buddy.role}")
+    print(f"Goal: {buddy.goal}")
+    print(f"Tools available: {len(buddy.tools)}")
+    print(f"Can delegate: {buddy.allow_delegation}")
+    print("=" * 60)
