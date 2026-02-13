@@ -2,22 +2,40 @@
 Travel Agent System - Beautiful Web Interface
 Modern, Next.js-inspired design with Streamlit
 """
-
 import streamlit as st
 from streamlit_option_menu import option_menu
 import sys
+import os  # ← ADD THIS LINE if missing!
 from pathlib import Path
 import time
 from datetime import datetime
+from dotenv import load_dotenv  # ← ADD THIS LINE if missing!
+
+# Load environment variables
+load_dotenv()  # ← ADD THIS LINE if missing!
 
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 # Import our system
+# Create agents with smaller model to avoid rate limits
+from crewai import Agent, LLM
+
+# Configure 8B model
+llm_8b = LLM(
+    model="groq/llama-3.1-8b-instant",
+    api_key=os.getenv("GROQ_API_KEY")
+)
+
+# Import and override
+# Import our agents - SIMPLE VERSION
 from agents.atlas import atlas
 from agents.shelter import shelter
 from agents.buddy import buddy
 from agents.captain import captain
+    
+
 from crewai import Crew, Task, Process
 from tasks.discovery_tasks import create_discovery_task
 from tasks.accommodation_tasks import create_accommodation_task
@@ -30,6 +48,12 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# Force all agents to use 8B model
+import os
+os.environ["DEFAULT_MODEL"] = "groq/llama-3.1-8b-instant"
+
+
 
 # Custom CSS for modern design
 def load_css():

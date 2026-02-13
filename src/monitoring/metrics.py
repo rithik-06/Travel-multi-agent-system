@@ -26,7 +26,7 @@ class MetricsTracker:
             self.metrics["successful_requests"] += 1
         else:
             self.metrics["failed_requests"] += 1
-    
+     
     def print_summary(self):
         """Print metrics summary"""
         print("\n" + "="*60)

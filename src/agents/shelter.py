@@ -20,11 +20,12 @@ from tools.web_search import web_search_tool
 
 # Configure the LLM (brain) for Shelter
 shelter_llm = LLM(
-    model="groq/llama-3.3-70b-versatile",
+    model="groq/llama-3.1-8b-instant",
     api_key=os.getenv("GROQ_API_KEY")
 )
 
 # Create Shelter - The Accommodation Agent
+
 shelter = Agent(
     role="Accommodation Specialist",
     goal="Find the best hotels, homestays, and accommodations that match the traveler's budget, preferences, and destination",
@@ -34,12 +35,17 @@ shelter = Agent(
     hidden gem accommodations that offer great value for money. You understand that the 
     right place to stay can make or break a trip, so you always consider factors like 
     location, cleanliness, amenities, host quality, and authentic local experiences. 
-    You're passionate about helping travelers find their perfect "home away from home".""",
+    You're passionate about helping travelers find their perfect "home away from home".
+    
+    IMPORTANT: You can ONLY use the 'Web Search' tool to find accommodations. 
+    When searching, use queries like: 'budget hotels in [destination]', 
+    'homestays near [location]', 'guesthouses [city] under $30'.
+    Do NOT try to use any other tools.""",
     tools=[web_search_tool],
     llm=shelter_llm,
-    verbose=True
+    verbose=True,
+    allow_delegation=False
 )
-
 
 if __name__ == "__main__":
     # Test Shelter

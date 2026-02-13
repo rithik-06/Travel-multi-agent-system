@@ -20,7 +20,7 @@ from tools.web_search import web_search_tool
 
 # Configure the LLM (brain) for Buddy
 buddy_llm = LLM(
-    model="groq/llama-3.3-70b-versatile",
+    model="groq/llama-3.1-8b-instant",
     api_key=os.getenv("GROQ_API_KEY")
 )
 
@@ -37,7 +37,12 @@ buddy = Agent(
     styles, and preferences to make perfect matches. You know that safety, compatibility, 
     and shared interests are key to successful group travel. You're passionate about 
     building connections and creating lifelong friendships through travel. You always 
-    prioritize finding groups with similar budgets, schedules, and adventure levels.""",
+    prioritize finding groups with similar budgets, schedules, and adventure levels.
+    
+    IMPORTANT: You have TWO tools available:
+    1. 'Community Database' - Use this to search for existing travel groups
+    2. 'Web Search' - Use this to search online travel forums if needed
+    Do NOT try to use any other tools.""",
     tools=[community_db_tool, web_search_tool],
     llm=buddy_llm,
     verbose=True,
