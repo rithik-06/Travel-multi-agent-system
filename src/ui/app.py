@@ -482,11 +482,32 @@ if selected == "🚀 Plan Trip":
                         progress.progress(80)
                         
                         captain_task = Task(
-                            description="Create concise plan: destination, top 3 hotels, budget, 3-day itinerary. Under 500 words.",
+                            description=f"""
+                            You have received information from your team:
+                            - Atlas found destinations 
+                            - Shelter found accommodations
+                            {' - Buddy found travel groups' if looking_for_group else ''}
+                            
+                            Your job: Create a final travel plan using ONLY the information provided above.
+                            
+                            Include:
+                            1. Recommended destination (from Atlas's findings)
+                            2. Top 3 accommodations (from Shelter's findings)
+                            3. Budget breakdown
+                            4. Simple 3-day itinerary
+                            5. Travel group option (from Buddy, if available)
+                            
+                            DO NOT search for new information. DO NOT delegate.
+                            Use only what Atlas, Shelter, and Buddy already found.
+                            
+                            Maximum 400 words. Be clear and actionable.
+                            """,
                             agent=captain,
-                            expected_output="Complete plan",
-                            context=tasks
+                            expected_output="Complete cohesive travel plan based on team findings",
+                            context=tasks  # Captain sees all previous task results
                         )
+                            
+                        
                         
                         tasks.append(captain_task)
                         agents_list.append(captain)
@@ -665,6 +686,7 @@ with st.sidebar:
 # Footer
 st.markdown("<br>", unsafe_allow_html=True)
 st.markdown(
+
     '<p style="text-align: center; color: white; font-weight: 500; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">'
     'Made with ❤️ by Rithik | TravelAI © 2026'
     '</p>',

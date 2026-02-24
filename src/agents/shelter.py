@@ -1,6 +1,6 @@
 """
 Shelter - The Accommodation Agent
-Uses Llama 8B Instant for fast accommodation searches
+Uses Llama 3.1 8B for fast searches
 """
 
 from crewai import Agent, LLM
@@ -16,7 +16,7 @@ load_dotenv()
 # Import tools
 from tools.web_search import web_search_tool
 
-# Configure LLM - Using Llama 8B (separate rate limit!)
+# Configure LLM - Using Llama 3.1 8B
 shelter_llm = LLM(
     model="groq/llama-3.1-8b-instant",
     api_key=os.getenv("GROQ_API_KEY")
@@ -25,10 +25,9 @@ shelter_llm = LLM(
 # Create Shelter Agent
 shelter = Agent(
     role="Accommodation Specialist",
-    goal="Find the best accommodations within budget and preferences",
-    backstory="""You are Shelter, a hospitality expert with 12 years of experience. 
-    You find value-for-money accommodations including hotels, homestays, and guesthouses. 
-    You search efficiently and focus on location, price, and amenities. Be brief.""",
+    goal="Find best accommodations within budget",
+    backstory="""Hospitality expert with 12 years experience. Find value accommodations. 
+    Search efficiently. Focus on location, price, amenities. Be brief.""",
     tools=[web_search_tool],
     llm=shelter_llm,
     verbose=True,
@@ -38,7 +37,7 @@ shelter = Agent(
 
 if __name__ == "__main__":
     print("=" * 60)
-    print("🏠 SHELTER - Accommodation Agent (Llama 8B)")
+    print("🏠 SHELTER - Accommodation Agent")
     print("=" * 60)
     print(f"Role: {shelter.role}")
     print(f"Model: llama-3.1-8b-instant")

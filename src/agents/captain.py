@@ -1,61 +1,43 @@
 """
 Captain - The Orchestrator Agent
-Coordinates Atlas, Shelter, and Buddy to create complete travel plans
+Synthesizes all agent results without delegation
 """
 
 from crewai import Agent, LLM
 import os
 from dotenv import load_dotenv
 
-# Load environment variables
 load_dotenv()
 
-# Import our custom tools (Captain doesn't use tools directly, but we import for reference)
-import sys
-from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
-
-# Configure the LLM (brain) for Captain
+# Configure LLM
 captain_llm = LLM(
-    model="groq/llama-3.1-8b-instant",
+    model="groq/llama-3.3-70b-versatile",
     api_key=os.getenv("GROQ_API_KEY")
 )
 
-# Create Captain - The Orchestrator Agent
+# Create Captain Agent - NO DELEGATION
 captain = Agent(
     role="Travel Planning Coordinator",
-    goal="Create comprehensive, personalized travel plans by coordinating the discovery, accommodation, and community teams to deliver complete travel solutions",
-    backstory="""You are Captain, an experienced travel planning coordinator with 
-    20 years in the industry. You've orchestrated thousands of successful trips by 
-    bringing together the right expertise at the right time. You understand that a 
-    great trip needs three things: the perfect destination (Atlas finds this), 
-    comfortable accommodation (Shelter finds this), and optionally great travel 
-    companions (Buddy finds this). 
+    goal="Synthesize team results into a complete travel plan",
+    backstory="""You are a travel coordinator. You receive information from your team 
+    (Atlas found destinations, Shelter found hotels, Buddy found groups) and you create 
+    a final cohesive plan. 
     
-    You're a master at taking a traveler's vision and breaking it down into clear, 
-    actionable tasks for your team. You know how to synthesize information from 
-    multiple sources into one cohesive, exciting travel plan. You always start with 
-    understanding the traveler's mood, budget, and preferences, then you coordinate 
-    your team to deliver a complete solution.
-    
-    You're organized, detail-oriented, and excellent at communicating. You make sure 
-    nothing falls through the cracks and that every recommendation makes sense 
-    together as a complete package.""",
-    tools=[],  # Captain doesn't use tools directly - delegates to other agents
+    IMPORTANT: You do NOT search or delegate. You ONLY synthesize the information already 
+    provided to you. Create a clear plan with: destination recommendation, top 3 accommodations, 
+    budget breakdown, and 3-day itinerary. Maximum 500 words.""",
+    tools=[],  # No tools
     llm=captain_llm,
     verbose=True,
-    allow_delegation=True  # This is KEY - Captain can delegate to other agents!
+    allow_delegation=False  # DISABLED!
 )
 
 
 if __name__ == "__main__":
-    # Test Captain
     print("=" * 60)
     print("👨‍✈️ CAPTAIN - Orchestrator Agent")
     print("=" * 60)
     print(f"Role: {captain.role}")
-    print(f"Goal: {captain.goal}")
-    print(f"Tools available: {len(captain.tools)}")
-    print(f"Can delegate: {captain.allow_delegation}")
+    print(f"Model: llama-3.3-70b-versatile")
+    print(f"Delegation: {captain.allow_delegation}")
     print("=" * 60)

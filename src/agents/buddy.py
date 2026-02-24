@@ -1,61 +1,46 @@
-## buddy agent ( community agent) 
-## connect travelers with similar intrests and finds travel groups
-
+"""
+Buddy - The Community Agent
+Uses Llama 3.2 3B for lightweight matching
+"""
 
 from crewai import Agent, LLM
 import os
 from dotenv import load_dotenv
-
-# Load environment variables
-load_dotenv()
-
-# Import our custom tools
 import sys
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
+# Setup paths
+sys.path.insert(0, str(Path(__file__).parent.parent))
+load_dotenv()
+
+# Import tools
 from tools.community_db import community_db_tool
 from tools.web_search import web_search_tool
 
-
-# Configure the LLM (brain) for Buddy
+# Configure LLM - Using Llama 3.2 3B (lightweight!)
 buddy_llm = LLM(
-    model="groq/llama-3.1-8b-instant",
-    api_key=os.getenv("GROQ_API_KEY")
+    model="huggingface/meta-llama/Meta-Llama-3-8B-Instruct",
+    api_key=os.getenv("HUGGINGFACE_API_KEY")
 )
 
-
-# Create Buddy - The Community Agent
+# Create Buddy Agent
 buddy = Agent(
     role="Travel Community Connector",
-    goal="Find and match travelers with groups, companions, or teams that share similar travel plans, interests, and destinations",
-    backstory="""You are Buddy, a friendly and energetic community manager who has 
-    built an incredible network of travelers around the world. You've helped thousands 
-    of solo travelers find their perfect travel companions and groups. You understand 
-    that traveling with the right people can transform an ordinary trip into an 
-    unforgettable adventure. You're excellent at reading people's interests, travel 
-    styles, and preferences to make perfect matches. You know that safety, compatibility, 
-    and shared interests are key to successful group travel. You're passionate about 
-    building connections and creating lifelong friendships through travel. You always 
-    prioritize finding groups with similar budgets, schedules, and adventure levels.
-    
-    IMPORTANT: You have TWO tools available:
-    1. 'Community Database' - Use this to search for existing travel groups
-    2. 'Web Search' - Use this to search online travel forums if needed
-    Do NOT try to use any other tools.""",
+    goal="Match travelers with compatible groups",
+    backstory="""Community manager connecting travelers. Match by destination, interests, 
+    budget, dates. Use community database first. Be friendly and concise.""",
     tools=[community_db_tool, web_search_tool],
     llm=buddy_llm,
     verbose=True,
     allow_delegation=False
 )
 
+
 if __name__ == "__main__":
-    # Test Buddy
     print("=" * 60)
     print("👥 BUDDY - Community Agent")
     print("=" * 60)
     print(f"Role: {buddy.role}")
-    print(f"Goal: {buddy.goal}")
-    print(f"Tools available: {len(buddy.tools)}")
-    print(f"Can delegate: {buddy.allow_delegation}")
+    print(f"Model: llama-3.2-3b-preview")
+    print(f"Tools: {len(buddy.tools)}")
     print("=" * 60)

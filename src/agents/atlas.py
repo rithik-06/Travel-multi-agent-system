@@ -1,6 +1,6 @@
 """
 Atlas - The Discovery Agent
-Uses Mixtral model for destination discovery
+Uses Llama 3.3 70B for destination discovery
 """
 
 from crewai import Agent, LLM
@@ -16,19 +16,18 @@ load_dotenv()
 # Import tools
 from tools.web_search import web_search_tool
 
-# Configure LLM - Using Mixtral (separate rate limit!)
+# Configure LLM - Using Llama 3.3 70B
 atlas_llm = LLM(
-    model="groq/mixtral-8x7b-32768",
+    model="groq/llama-3.3-70b-versatile",
     api_key=os.getenv("GROQ_API_KEY")
 )
 
 # Create Atlas Agent
 atlas = Agent(
     role="Travel Discovery Specialist",
-    goal="Find perfect travel destinations matching user preferences and budget",
-    backstory="""You are Atlas, an expert traveler with 15 years of global experience. 
-    You find destinations that match travelers' moods, interests, and budgets. 
-    You use web search efficiently - search once per destination. Be concise and specific.""",
+    goal="Find perfect travel destinations",
+    backstory="""Expert traveler with 15 years experience. Find destinations matching 
+    mood, interests, budget. Search once per destination. Be concise.""",
     tools=[web_search_tool],
     llm=atlas_llm,
     verbose=True,
@@ -38,9 +37,9 @@ atlas = Agent(
 
 if __name__ == "__main__":
     print("=" * 60)
-    print("🗺️  ATLAS - Discovery Agent (Mixtral)")
+    print("🗺️  ATLAS - Discovery Agent")
     print("=" * 60)
     print(f"Role: {atlas.role}")
-    print(f"Model: mixtral-8x7b-32768")
+    print(f"Model: llama-3.3-70b-versatile")
     print(f"Tools: {len(atlas.tools)}")
     print("=" * 60)
