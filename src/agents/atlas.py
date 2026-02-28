@@ -18,8 +18,8 @@ from tools.web_search import web_search_tool
 
 # Configure LLM - Using Llama 3.3 70B
 atlas_llm = LLM(
-    model="groq/llama-3.3-70b-versatile",
-    api_key=os.getenv("GROQ_API_KEY")
+    model="huggingface/meta-llama/Meta-Llama-3-8B-Instruct",
+    api_key=os.getenv("HUGGINGFACE_API_KEY")
 )
 
 # Create Atlas Agent
