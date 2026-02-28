@@ -29,3 +29,6 @@ tenacity==8.2.3
 
 # Monitoring & Logging
 colorlog==6.8.0
+
+huggingface_hub
+tavily-python
