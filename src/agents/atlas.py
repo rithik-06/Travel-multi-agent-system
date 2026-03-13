@@ -1,6 +1,6 @@
 """
-Atlas - The Discovery Agent
-Uses Llama 3.3 70B for destination discovery
+Atlas - Discovery Agent
+Uses OpenRouter (Free Llama 3 model)
 """
 
 from crewai import Agent, LLM
@@ -9,26 +9,30 @@ from dotenv import load_dotenv
 import sys
 from pathlib import Path
 
-# Setup paths
+# Setup
 sys.path.insert(0, str(Path(__file__).parent.parent))
 load_dotenv()
 
 # Import tools
-from tools.web_search import web_search_tool
+try:
+    from tools.tavily_search import tavily_search_tool
+    TOOL = tavily_search_tool
+except:
+    from tools.web_search import web_search_tool
+    TOOL = web_search_tool
 
-# Configure LLM - Using Llama 3.3 70B
+# OpenRouter LLM
 atlas_llm = LLM(
-    model="huggingface/meta-llama/Meta-Llama-3-8B-Instruct",
-    api_key=os.getenv("HUGGINGFACE_API_KEY")
+    model="openrouter/meta-llama/llama-3-8b-instruct:free",
+    api_key=os.getenv("OPENROUTER_API_KEY")
 )
 
-# Create Atlas Agent
+# Create Atlas
 atlas = Agent(
     role="Travel Discovery Specialist",
-    goal="Find perfect travel destinations",
-    backstory="""Expert traveler with 15 years experience. Find destinations matching 
-    mood, interests, budget. Search once per destination. Be concise.""",
-    tools=[web_search_tool],
+    goal="Find 3 perfect destinations matching user preferences",
+    backstory="Expert traveler. Find destinations efficiently. Search once per destination.",
+    tools=[TOOL],
     llm=atlas_llm,
     verbose=True,
     allow_delegation=False
@@ -39,7 +43,7 @@ if __name__ == "__main__":
     print("=" * 60)
     print("🗺️  ATLAS - Discovery Agent")
     print("=" * 60)
-    print(f"Role: {atlas.role}")
-    print(f"Model: llama-3.3-70b-versatile")
+    print(f"Provider: OpenRouter")
+    print(f"Model: Llama 3 8B (Free)")
     print(f"Tools: {len(atlas.tools)}")
     print("=" * 60)
