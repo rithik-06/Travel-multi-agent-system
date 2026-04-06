@@ -1,6 +1,5 @@
 """
-Shelter - The Accommodation Agent
-Uses Llama 3.1 8B for fast searches
+Shelter - Accommodation Agent (Groq Optimized)
 """
 
 from crewai import Agent, LLM
@@ -9,37 +8,30 @@ from dotenv import load_dotenv
 import sys
 from pathlib import Path
 
-# Setup paths
 sys.path.insert(0, str(Path(__file__).parent.parent))
 load_dotenv()
 
-# Import tools
-from tools.web_search import web_search_tool
+try:
+    from tools.tavily_search import tavily_search_tool
+    TOOL = tavily_search_tool
+except:
+    from tools.web_search import web_search_tool
+    TOOL = web_search_tool
 
-# Configure LLM - Using Llama 3.1 8B
+# Optimized Groq setup
 shelter_llm = LLM(
-    model="huggingface/meta-llama/Meta-Llama-3-8B-Instruct",
-    api_key=os.getenv("HUGGINGFACE_API_KEY")
+    model="groq/llama-3.1-8b-instant",
+    api_key=os.getenv("GROQ_API_KEY"),
+    temperature=0.3,
+    max_tokens=800
 )
 
-# Create Shelter Agent
 shelter = Agent(
-    role="Accommodation Specialist",
-    goal="Find best accommodations within budget",
-    backstory="""Hospitality expert with 12 years experience. Find value accommodations. 
-    Search efficiently. Focus on location, price, amenities. Be brief.""",
-    tools=[web_search_tool],
+    role="Accommodation Agent",
+    goal="Find 5 hotels fast",
+    backstory="Expert. Find hotels. Be brief.",
+    tools=[TOOL],
     llm=shelter_llm,
-    verbose=True,
+    verbose=False,
     allow_delegation=False
 )
-
-
-if __name__ == "__main__":
-    print("=" * 60)
-    print("🏠 SHELTER - Accommodation Agent")
-    print("=" * 60)
-    print(f"Role: {shelter.role}")
-    print(f"Model: llama-3.1-8b-instant")
-    print(f"Tools: {len(shelter.tools)}")
-    print("=" * 60)

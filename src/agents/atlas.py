@@ -1,6 +1,5 @@
 """
-Atlas - Discovery Agent
-Uses OpenRouter (Free Llama 3 model)
+Atlas - Discovery Agent (Groq Optimized)
 """
 
 from crewai import Agent, LLM
@@ -9,11 +8,9 @@ from dotenv import load_dotenv
 import sys
 from pathlib import Path
 
-# Setup
 sys.path.insert(0, str(Path(__file__).parent.parent))
 load_dotenv()
 
-# Import tools
 try:
     from tools.tavily_search import tavily_search_tool
     TOOL = tavily_search_tool
@@ -21,29 +18,20 @@ except:
     from tools.web_search import web_search_tool
     TOOL = web_search_tool
 
-# OpenRouter LLM
+# Optimized Groq setup
 atlas_llm = LLM(
-    model="openrouter/meta-llama/llama-3-8b-instruct:free",
-    api_key=os.getenv("OPENROUTER_API_KEY")
+    model="groq/llama-3.1-8b-instant",
+    api_key=os.getenv("GROQ_API_KEY"),
+    temperature=0.3,      # More focused
+    max_tokens=800        # Limit output
 )
 
-# Create Atlas
 atlas = Agent(
-    role="Travel Discovery Specialist",
-    goal="Find 3 perfect destinations matching user preferences",
-    backstory="Expert traveler. Find destinations efficiently. Search once per destination.",
+    role="Discovery Agent",
+    goal="Find 3 destinations fast",
+    backstory="Expert. Find destinations. Be brief.",  # Ultra short!
     tools=[TOOL],
     llm=atlas_llm,
-    verbose=True,
+    verbose=False,  # Less logging = fewer tokens!
     allow_delegation=False
 )
-
-
-if __name__ == "__main__":
-    print("=" * 60)
-    print("🗺️  ATLAS - Discovery Agent")
-    print("=" * 60)
-    print(f"Provider: OpenRouter")
-    print(f"Model: Llama 3 8B (Free)")
-    print(f"Tools: {len(atlas.tools)}")
-    print("=" * 60)
