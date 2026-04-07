@@ -1,29 +1,40 @@
 """
-Web search tool - uses DuckDuckGo (free, no API key needed)
+Travel search tool - uses Gemini Flash (free, no rate limit issues)
 """
 
-from duckduckgo_search import DDGS
+from google import genai
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 
-def web_search(query: str, max_results: int = 5) -> str:
+def web_search(query: str) -> str:
     """
-    Search the web for travel information.
-    Returns formatted results as a string that agents can reason over.
+    Search for travel information using Gemini.
+    Returns detailed results as a string that agents can reason over.
     """
     try:
-        with DDGS() as ddgs:
-            results = list(ddgs.text(query, max_results=max_results))
+        prompt = f"""
+You are a travel research assistant with deep knowledge of Indian travel destinations.
+Answer this search query with detailed, accurate, and practical information:
 
-        if not results:
-            return f"No results found for: {query}"
+Query: {query}
 
-        formatted = f"Search results for '{query}':\n\n"
-        for i, result in enumerate(results, 1):
-            formatted += f"{i}. {result['title']}\n"
-            formatted += f"   {result['body'][:300]}\n"
-            formatted += f"   URL: {result['href']}\n\n"
+Provide:
+- Specific place names and locations
+- Real practical details (distances, costs, timings, seasons)
+- Helpful tips a traveler would actually need
 
-        return formatted
+Be specific and factual. No vague answers.
+"""
+        response = client.models.generate_content(
+            model="gemini-2.0-flash-lite",
+            contents=prompt
+        )
+        return response.text.strip()
 
     except Exception as e:
         return f"Search failed: {str(e)}"
